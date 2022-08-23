@@ -1,0 +1,30 @@
+{
+  "name": "song-lyric",
+  "version": "1.0.0",
+  "scripts": {
+    "prepare": "husky install",
+    "update-packages": "pnpm update -i -r --latest"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/bonbybao169/TestTSS.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/bonbybao169/TestTSS/issues"
+  },
+  "homepage": "https://github.com/bonbybao169/TestTSS#readme",
+  "devDependencies": {
+    "@typescript-eslint/eslint-plugin": "^5.27.0",
+    "@typescript-eslint/parser": "^5.27.0",
+    "eslint": "^8.16.0",
+    "eslint-config-prettier": "^8.5.0",
+    "eslint-plugin-prettier": "^4.0.0",
+    "husky": "^8.0.1",
+    "lint-staged": "^13.0.0",
+    "prettier": "^2.6.2",
+    "tslib": "^2.4.0",
+    "typescript": "^4.7.3"
+  }
+}

@@ -1,0 +1,25 @@
+{
+  "moduleNameMapper": {
+    "^utils/pagy(.*)$": "<rootDir>/utils/pagy$1",
+    "^services(.*)$": "<rootDir>/services$1",
+    "^api(.*)$": "<rootDir>/api$1",
+    "^commons(.*)$": "<rootDir>/commons$1",
+    "^__tests__(.*)$": "<rootDir>/__tests__$1",
+    "^interceptors(.*)$": "<rootDir>/interceptors$1",
+    "^users(.*)$": "<rootDir>/users$1",
+    "app.module": "<rootDir>/app.module",
+    "app.controller": "<rootDir>/app.controller"
+  },
+  "moduleFileExtensions": ["js", "json", "ts"],
+  "setupFilesAfterEnv": ["<rootDir>/__tests__/__config__/setupTest.ts"],
+  "rootDir": "src",
+  "testRegex": ".*\\.spec\\.ts$",
+  "transform": {
+    "^.+\\.(t|j)s$": "ts-jest"
+  },
+  "collectCoverageFrom": ["**/*.(t|j)s"],
+  "coverageDirectory": "../coverage",
+  "clearMocks": true,
+  "testEnvironment": "node",
+  "maxWorkers": 1
+}

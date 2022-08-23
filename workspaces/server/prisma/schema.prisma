@@ -1,0 +1,197 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider        = "prisma-client-js"
+  previewFeatures = ["fullTextSearch"]
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id Int @id @default(autoincrement())
+
+  email           String  @unique
+  password        String
+  role            Role    @default(user)
+  firstName       String? @map("first_name")
+  lastName        String? @map("last_name")
+  numberOfUploads Int     @map("number_of_uploads")
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  lyrics       Lyric[]
+  socialsAuths SocialsAuth[]
+
+  @@map("users")
+}
+
+model SocialsAuth {
+  id Int @id @default(autoincrement())
+
+  userId     Int    @map("user_id")
+  socialType Social @map("social_type")
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  users User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, socialType])
+  @@map("socials_auths")
+}
+
+enum Role {
+  user
+  admin
+}
+
+enum Social {
+  facebook
+  google
+}
+
+model Song {
+  id Int @id @default(autoincrement())
+
+  name   String
+  length Float?
+  view   Int     @default(0)
+  url    String?
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  singersSongs SingersSong[]
+  authorsSongs AuthorsSong[]
+  genresSongs  GenresSong[]
+  lyrics       Lyric[]
+
+  @@map("songs")
+}
+
+model Singer {
+  id Int @id @default(autoincrement())
+
+  name          String
+  dateOfBirth   DateTime? @map("date_of_birth")
+  numberOfSongs Int       @default(0) @map("number_of_songs")
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  singersSongs SingersSong[]
+
+  @@map("singers")
+}
+
+model SingersSong {
+  id Int @id @default(autoincrement())
+
+  singerId Int @map("singer_id")
+  songId   Int @map("song_id")
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  song   Song   @relation(fields: [songId], references: [id], onDelete: Cascade)
+  singer Singer @relation(fields: [singerId], references: [id], onDelete: Cascade)
+
+  @@index([songId])
+  @@index([singerId])
+  @@map("singers_songs")
+}
+
+model Author {
+  id Int @id @default(autoincrement())
+
+  name          String
+  dateOfBirth   DateTime? @map("date_of_birth")
+  numberOfSongs Int       @default(0) @map("number_of_songs")
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  authorsSongs AuthorsSong[]
+
+  @@map("authors")
+}
+
+model AuthorsSong {
+  id Int @id @default(autoincrement())
+
+  authorId Int @map("author_id")
+  songId   Int @map("song_id")
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  song   Song   @relation(fields: [songId], references: [id], onDelete: Cascade)
+  author Author @relation(fields: [authorId], references: [id], onDelete: Cascade)
+
+  @@index([songId])
+  @@index([authorId])
+  @@map("authors_songs")
+}
+
+model Genre {
+  id Int @id @default(autoincrement())
+
+  name          String @unique
+  numberOfSongs Int    @default(0) @map("number_of_songs")
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  genresSongs GenresSong[]
+
+  @@map("genres")
+}
+
+model GenresSong {
+  id Int @id @default(autoincrement())
+
+  songId  Int @map("song_id")
+  genreId Int @map("genre_id")
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  song  Song  @relation(fields: [songId], references: [id], onDelete: Cascade)
+  genre Genre @relation(fields: [genreId], references: [id], onDelete: Cascade)
+
+  @@index([songId])
+  @@index([genreId])
+  @@map("genres_songs")
+}
+
+model Lyric {
+  id Int @id @default(autoincrement())
+
+  songId       Int      @map("song_id")
+  languageCode String   @map("language_code")
+  content      String
+  translatorId Int      @map("translator_id")
+  default      Boolean
+  status       Status   @default(pending)
+  createdAt    DateTime @default(now()) @map("created_at")
+  updatedAt    DateTime @updatedAt @map("updated_at")
+
+  translator User @relation(fields: [translatorId], references: [id], onDelete: Cascade)
+  song       Song @relation(fields: [songId], references: [id], onDelete: Cascade)
+
+  @@index([translatorId])
+  @@index([songId])
+  @@map("lyrics")
+}
+
+enum Status {
+  draft
+  pending
+  approved
+  rejected
+}
